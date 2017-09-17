@@ -8,10 +8,10 @@
 using namespace std;
 
 void error(string);
-
+void print(string);
 int main()
 {
-    int portNum = 7777;
+    int portNum = 7778;
  
     int client = socket(AF_INET, SOCK_STREAM, 0);
     if( client < 0)
@@ -28,10 +28,12 @@ int main()
     listen(client, 1);
     int server = accept(client, (struct sockaddr *)&server_address, &size);
 
+    print("connected");
     int bufsize = 1024;
     char buffer[bufsize];
-    while (server < 0 )
+    while (server >= 0 )
     {
+        print("waiting");
         recv(server, buffer, bufsize, 0);
         cout << buffer << endl;
         if(*buffer == '*')
@@ -43,4 +45,9 @@ int main()
 void error(string error)
 {
     throw runtime_error(error);
+}
+
+void print(string string)
+{
+    cout << string << endl;
 }
