@@ -5,6 +5,7 @@
 #include <netinet/in.h>
 #include <stdexcept>
 #include <unistd.h>
+#include "Socket.h"
 using namespace std;
 
 void error(string);
@@ -13,9 +14,7 @@ int main()
 {
     int portNum = 7778;
  
-    int client = socket(AF_INET, SOCK_STREAM, 0);
-    if( client < 0)
-        error("couldnot open socket");
+    int client = getSocket(AF_INET, SOCK_STREAM, 0);
     
     struct sockaddr_in server_address, client_address;
     server_address.sin_family = AF_INET;
