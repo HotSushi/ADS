@@ -12,7 +12,8 @@ void error(string);
 void print(string);
 int main()
 {
-    int server = startTCPServerSocket(7778);
+    int server;
+    server = startTCPServerSocket(7778, server);
     print("connected");
     int bufsize = 1024;
     char buffer[bufsize];

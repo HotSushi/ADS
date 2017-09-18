@@ -7,9 +7,9 @@ int getSocket(int net, int flow, int proto)
     return sockt;
 }
 
-int startTCPServerSocket(int portNumber)
+int startTCPServerSocket(int portNumber, int &sockt)
 {
-    int sockt = getSocket(AF_INET, SOCK_STREAM, 0);
+    sockt = getSocket(AF_INET, SOCK_STREAM, 0);
 
     struct sockaddr_in server_address, client_address;
     server_address.sin_family = AF_INET;
@@ -23,4 +23,19 @@ int startTCPServerSocket(int portNumber)
     listen(sockt, 1);
     int server = accept(sockt, (struct sockaddr *)&server_address, &size);
     return server;
+}
+
+void startTCPClientSocket(int portNum, std::string ip, int &sockt)
+{
+    struct sockaddr_in server_address;
+
+    sockt = socket(AF_INET, SOCK_STREAM, 0);
+    if(sockt < 0) throw std::runtime_error("couldnt open socket");
+
+    server_address.sin_family = AF_INET;
+    server_address.sin_port = htons(portNum);
+    server_address.sin_addr.s_addr = inet_addr(ip.c_str());
+
+    if (connect(sockt,(struct sockaddr *)&server_address, sizeof(server_address)) < 0)
+        throw std::runtime_error("couldnt connect to server");
 }
