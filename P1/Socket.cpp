@@ -52,3 +52,12 @@ void startUDPServerSocket(int portNumber, int &sockt)
     if ((bind(sockt, (struct sockaddr *)&server_address, sizeof(server_address))) < 0) 
         throw std::runtime_error("Error: Initializing Socket");
 }
+
+void startUDPClientSocket(int portNum, std::string ip, int &sockt, sockaddr_in &server_address)
+{
+    sockt = getSocket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+
+    server_address.sin_family = AF_INET;
+    server_address.sin_port = htons(portNum);
+    server_address.sin_addr.s_addr = inet_addr(ip.c_str());
+}

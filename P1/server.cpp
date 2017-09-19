@@ -13,14 +13,20 @@ void print(string);
 int main()
 {
     int server;
-    server = startTCPServerSocket(7778, server);
+    //server = startTCPServerSocket(7778, server);
+
+    struct sockaddr_in si_other;
+    startUDPServerSocket(7778, server);
+    socklen_t slen = sizeof(si_other);
+
     print("connected");
     int bufsize = 1024;
     char buffer[bufsize];
     while (server >= 0 )
     {
         print("waiting");
-        recv(server, buffer, bufsize, 0);
+        recvfrom(server, buffer, bufsize, 0, (struct sockaddr *) &si_other, &slen);
+        //recv(server, buffer, bufsize, 0);
         cout << buffer << endl;
         if(*buffer == '*')
             break;

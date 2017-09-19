@@ -13,5 +13,7 @@ int getSocket(int, int, int);
 int startTCPServerSocket(int, int&);
 void startTCPClientSocket(int, std::string, int&);
 void startUDPServerSocket(int portNumber, int &sockt);
+void startUDPClientSocket(int portNum, std::string ip, int &sockt, sockaddr_in &server_address);
+
 
 #endif

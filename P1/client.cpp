@@ -14,14 +14,17 @@ void error(string);
 
 int main(){
     int client;
-    startTCPClientSocket(7778, "127.0.0.1", client);
+    //startTCPClientSocket(7778, "127.0.0.1", client);
+    struct sockaddr_in si_other;
+    startUDPClientSocket(7778, "127.0.0.1", client, si_other);
     int bufsize = 1024;
     char buffer[bufsize];
     string input = "";
     while(*buffer != 42)
     {
         cin >> buffer;
-        send(client, buffer, bufsize, 0);
+        //send(client, buffer, bufsize, 0);
+       sendto(client, buffer, bufsize, 0, (struct sockaddr *)&si_other, sizeof(si_other)); 
     }
     close(client);
         
