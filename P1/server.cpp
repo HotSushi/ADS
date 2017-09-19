@@ -10,6 +10,12 @@ using namespace std;
 
 void error(string);
 void print(string);
+void Q1TCP();
+
+int main(){
+    Q1TCP();
+}
+/*
 int main()
 {
     int server;
@@ -31,6 +37,18 @@ int main()
         if(*buffer == '*')
             break;
     }
+    close(server);
+}
+*/
+
+/* Server responds with an ack */
+void Q1TCP()
+{
+    int server;
+    server = startTCPServerSocket(7778, server);
+    char buffer[1];
+    recv(server, buffer, 1, 0);
+    send(server, buffer, 1, 0);
     close(server);
 }
 

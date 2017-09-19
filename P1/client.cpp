@@ -1,3 +1,4 @@
+#include<ctime>
 #include <iostream>
 #include <stdio.h>
 #include <sys/types.h>
@@ -11,7 +12,13 @@
 using namespace std;
 
 void error(string);
+void Q1TCP();
 
+int main()
+{
+    Q1TCP();
+}
+/*
 int main(){
     int client;
     //startTCPClientSocket(7778, "127.0.0.1", client);
@@ -28,6 +35,20 @@ int main(){
     }
     close(client);
         
+}
+*/
+void Q1TCP()
+{
+    int client;
+    startTCPClientSocket(7778, "127.0.0.1", client);
+    char buffer[1] = {'x'};
+    clock_t begin = clock();
+    send(client, buffer, 1, 0);
+    recv(client, buffer, 1, 0);
+    clock_t end = clock();
+    double elapsed_sec = double(end - begin)/ CLOCKS_PER_SEC;
+    cout << "Elaspsed Time:" << elapsed_sec << endl;
+    close(client);
 }
 
 void error(string error)
