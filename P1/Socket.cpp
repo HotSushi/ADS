@@ -39,3 +39,16 @@ void startTCPClientSocket(int portNum, std::string ip, int &sockt)
     if (connect(sockt,(struct sockaddr *)&server_address, sizeof(server_address)) < 0)
         throw std::runtime_error("couldnt connect to server");
 }
+
+void startUDPServerSocket(int portNumber, int &sockt)
+{
+    sockt = getSocket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+
+    struct sockaddr_in server_address, client_address;
+    server_address.sin_family = AF_INET;
+    server_address.sin_addr.s_addr = htons(INADDR_ANY);
+    server_address.sin_port = htons(portNumber);
+
+    if ((bind(sockt, (struct sockaddr *)&server_address, sizeof(server_address))) < 0) 
+        throw std::runtime_error("Error: Initializing Socket");
+}
