@@ -20,7 +20,7 @@ int startTCPServerSocket(int portNumber, int &sockt)
         throw std::runtime_error("Error: Initializing Socket");
   
     socklen_t size = sizeof(server_address);               
-    listen(sockt, 1);
+    listen(sockt, 1000);
     int server = accept(sockt, (struct sockaddr *)&server_address, &size);
     return server;
 }

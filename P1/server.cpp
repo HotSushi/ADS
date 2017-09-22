@@ -11,9 +11,11 @@ using namespace std;
 void error(string);
 void print(string);
 void Q1TCP();
+void Q1UDP();
+void Q3();
 
 int main(){
-    Q1TCP();
+    Q3();
 }
 /*
 int main()
@@ -49,6 +51,39 @@ void Q1TCP()
     char buffer[1];
     recv(server, buffer, 1, 0);
     send(server, buffer, 1, 0);
+    close(server);
+}
+
+void Q1UDP()
+{
+    int server;
+    struct sockaddr_in si_other;
+    startUDPServerSocket(7778, server);
+    socklen_t slen = sizeof(si_other);
+    char buffer[1];
+    recvfrom(server, buffer, 1, 0, (struct sockaddr *) &si_other, &slen);
+    sendto(server, buffer, 1, 0, (struct sockaddr *)&si_other, slen); 
+    close(server);
+}
+
+void Q3()
+{
+    int server, blockMode;
+    server = startTCPServerSocket(7779, server);
+    char buffer[1]={'y'};
+    // PartA
+    while(server >= 0){
+        int readvl = read(server, buffer, 1);
+        cout << readvl << endl;
+        if(readvl > 0){
+            write(server, buffer, 1);
+            cout << "read" << buffer << endl;
+        }
+        else if(readvl < 0){
+            cout << "accepting new" << endl;
+            server = accept(server, NULL , NULL);
+        }
+    }
     close(server);
 }
 
