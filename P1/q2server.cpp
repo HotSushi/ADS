@@ -11,7 +11,11 @@
 #include <netinet/in.h>
 #include <stdexcept>
 #include <unistd.h>
-#define PORT 8080
+#define PORT 8081
+#define GB 1000000
+#define KB 1000
+#define LEN 1000000
+#define REP 1000
 using namespace std;
 int main(int argc, char const *argv[])
 {
@@ -19,9 +23,10 @@ int main(int argc, char const *argv[])
     struct sockaddr_in address;
     int opt = 1;
     int addrlen = sizeof(address);
-    char buffer[1024] = {0};
-    char *hello = "A";
-      
+    char buffer[LEN] = {0};
+    double tenGB_in_bytes = ((double)GB * KB)*10;
+    double backup = tenGB_in_bytes;
+    cout << "Q2 Send 10 GB file" << endl;
     // Creating socket file descriptor
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
     {
@@ -45,16 +50,29 @@ int main(int argc, char const *argv[])
         perror("listen");
         exit(EXIT_FAILURE);
     }
-    while(true){
-        if ((buffer[0] != 'Z') && (new_socket = accept(server_fd, (struct sockaddr *)&address, 
+    if ((new_socket = accept(server_fd, (struct sockaddr *)&address, 
                            (socklen_t*)&addrlen))<0)
         {
             perror("accept");
             exit(EXIT_FAILURE);
         }
-        valread = read( new_socket , buffer, 1024);
-        send(new_socket , hello , 1 , 0 );
+    for(int i=0; i< REP ; i++){
+        double perc1 = backup/1000, printcounter = backup;
+        clock_t begin = clock();
+        while(true){
+            valread = read( new_socket , buffer, LEN);
+            tenGB_in_bytes -= valread;
+            if(tenGB_in_bytes < printcounter){
+                cout << tenGB_in_bytes << endl;
+                printcounter -= perc1;
+            }
+            if(tenGB_in_bytes< 0) break;
+        }
+        tenGB_in_bytes = backup;
+        clock_t end = clock();
+        double partA = double(end - begin)/ CLOCKS_PER_SEC;
+        cout << "time:"<<partA << endl;
     }
-    cout<<"Done"<< endl;
+    close(server_fd);
     return 0;
 }
