@@ -11,7 +11,7 @@
 #include <netinet/in.h>
 #include <stdexcept>
 #include <unistd.h>
-#define PORT 8080
+#define PORT 8082
 using namespace std;
 int main(int argc, char const *argv[])
 {

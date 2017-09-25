@@ -8,15 +8,17 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/time.h>
 #include <netinet/in.h>
 #include <stdexcept>
 #include <unistd.h>
-#define PORT 8081
+#define PORT 8080
 #define GB 1000000
 #define KB 1000
 #define LEN 1000000
 #define REP 1000
 using namespace std;
+double getTimeDifference(struct timeval before, struct timeval after);
 int main(int argc, char const *argv[])
 {
     int server_fd, new_socket, valread;
@@ -26,7 +28,7 @@ int main(int argc, char const *argv[])
     char buffer[LEN] = {0};
     double tenGB_in_bytes = ((double)GB * KB)*10;
     double backup = tenGB_in_bytes;
-    cout << "Q2 Send 10 GB file" << endl;
+    cout << "Q2 local 10 GB file" << endl;
     // Creating socket file descriptor
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
     {
@@ -57,22 +59,28 @@ int main(int argc, char const *argv[])
             exit(EXIT_FAILURE);
         }
     for(int i=0; i< REP ; i++){
-        double perc1 = backup/1000, printcounter = backup;
-        clock_t begin = clock();
+        struct timeval tvalBefore, tvalAfter;
+        gettimeofday (&tvalBefore, NULL);
+        double hundMB_in_bytes = tenGB_in_bytes;
         while(true){
             valread = read( new_socket , buffer, LEN);
-            tenGB_in_bytes -= valread;
-            if(tenGB_in_bytes < printcounter){
-                cout << tenGB_in_bytes << endl;
-                printcounter -= perc1;
-            }
-            if(tenGB_in_bytes< 0) break;
+            hundMB_in_bytes -= valread;
+            if(hundMB_in_bytes< 0) break;
         }
-        tenGB_in_bytes = backup;
-        clock_t end = clock();
-        double partA = double(end - begin)/ CLOCKS_PER_SEC;
-        cout << "time:"<<partA << endl;
+        gettimeofday (&tvalAfter, NULL);
+        double partA = getTimeDifference(tvalBefore, tvalAfter);
+        cout << partA<< endl;
+        break;
     }
     close(server_fd);
     return 0;
+}
+
+// gets time in millisec
+double getTimeDifference(struct timeval before, struct timeval after)
+{
+    double elapsedTime;
+    elapsedTime = (after.tv_sec - before.tv_sec) * 1000.0;
+    elapsedTime += (after.tv_usec - before.tv_usec) / 1000.0;
+    return elapsedTime;
 }
